@@ -1,0 +1,7 @@
+首先在生成bit文件的时候，可以根据SPI位宽选择不同的SPI_BUSWIDTH，全程重新编译，生成bit文件
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
+
+其次，生成MCS文件的位宽要和bit文件中一致
+write_cfgmem -format MCS -interface spix4 -size 512 -loadbit "up 0x0 \
+    E:/FPGA/A7_changzhou/changzhou.runs/impl_1/top_test_led.bit" \
+    E:/FPGA/A7_changzhou/changzhou.runs/impl_1

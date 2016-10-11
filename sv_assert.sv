@@ -19,7 +19,7 @@ $diaplay("failure!",$time);
         @ (posedge clk) a [*1:3] ———— 断定“@ (posedge clk) a”在连续1~3个时钟周期内都成立。
         @ (posedge clk) a [->3] ———— 断定“@ (posedge clk) a”在非连续的3个时钟周期内都成立。
     
-3. 语法6：屏蔽不定态  
+3. 语法6：屏蔽不定态语法  
     当信号被断言时，如果信号是未复位的不定态，不管怎么断言，都会报告：“断言失败”，为了在不定态不报告问题，在断言时可以屏蔽。
     如： @(posedge clk) (q == $past(d))，当未复位时报错，屏蔽方法是将该句改写为：
          @(posedge clk) disable iff (!rst_n) (q == $past(d))  //rst是低电平有效
