@@ -1,8 +1,3 @@
-(* dont_touch="true" *)
-(* MARK_DEBUG="true" *)
-(* keep="true" *)
-(* keep_hierarchy="yes" *)
-(* max_fanout=4 *)
 
 
 //******************************************************************************
@@ -23,6 +18,12 @@
 //******************************************************************************
 //                               Vivado XDC
 //******************************************************************************
+(* dont_touch="true" *)
+(* MARK_DEBUG="true" *)
+(* keep="true" *)
+(* keep_hierarchy="yes" *)
+(* max_fanout=4 *)
+(* ASYNC_REG="true" *)
 
 set_property PACKAGE_PIN G21 [get_ports led]
 set_property IOSTANDARD LVCMOS33 [get_ports led]
@@ -35,6 +36,10 @@ create_clock -period 60.000 [get_nets W_uart_clk_0]
 
 #普通IO输入I_SCLK作为时钟
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets I_SCLK_IBUF]
+
+
+set_false_path -from [get_port I_rst_n] -to [all_registers]
+set_clock_groups -asynchronous -group [get_clocks -include_generated_clocks gt_txclk] -group {I_SCLK_0 I_SCLK_1 I_SCLK_2 I_SCLK_3 I_SCLK_4}
 
 
 
