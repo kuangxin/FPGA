@@ -80,11 +80,14 @@ reg [15:0] O_serdes_data ;
 reg [15:0] R_serdes_data ;
 reg [15:0] R1_serdes_data;
 reg [ 1:0] R_data_is_k   ;
+reg [ 1:0] R1_data_is_k  ;
 reg [ 1:0] R_data_sel    ;
 reg [15:0] R_user_data   ;
 reg        R_data_ena    ;
 reg [63:0] R_rx_sync_data;
+(* KEEP = "TRUE" *)
 reg        R_rx_link     ;
+(* KEEP = "TRUE" *)
 reg        R_tx_link     ;
 reg [ 2:0] R_tx_fsm_cnt  ;
 reg        R_sync_config ;
@@ -165,6 +168,18 @@ always @ (posedge I_serdes_rx_clk or negedge I_rst_n)
 begin
     if(~I_rst_n)
     begin
+        R1_data_is_k  <=  0;
+    end
+    else
+    begin
+        R1_data_is_k  <=  R_data_is_k;
+    end
+end
+
+always @ (posedge I_serdes_rx_clk or negedge I_rst_n)
+begin
+    if(~I_rst_n)
+    begin
         R_user_data <=  16'h0000;
         R_data_ena  <=  1'b0;
     end
@@ -173,12 +188,12 @@ begin
         if(R_data_sel == 2'b10)//comma BC appears in high byte, need to be shift
         begin
             R_user_data <=  {R_serdes_data[7:0],R1_serdes_data[15:8]};
-            R_data_ena  <=  ~R_data_sel[1];
+            R_data_ena  <=  ~R1_data_is_k[1];
         end
         else
         begin
             R_user_data <=  R1_serdes_data;
-            R_data_ena  <=  ~R_data_sel[0];
+            R_data_ena  <=  ~R1_data_is_k[0];
         end
     end
 end
@@ -276,7 +291,7 @@ begin
     else
     begin
         O_user_data <= R_user_data;
-        O_data_ena  <= R_data_ena&&R_rx_link;
+        O_data_ena  <= R_data_ena&&R_tx_link;
     end
 end
 //-------------------------------------serdes rx ------------------------------------
@@ -446,7 +461,7 @@ begin
             end
             else
             begin            
-                O_serdes_data   <=  16'hc5bc;
+                O_serdes_data   <=  I_tx_user_data;
                 O_data_is_k     <=  2'b01;          
             end
         end

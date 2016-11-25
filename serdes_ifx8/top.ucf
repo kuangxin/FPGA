@@ -1,0 +1,99 @@
+################################## Clock Constraints ##########################
+
+
+ NET "*/q0_clk0_refclk_i" TNM_NET = "q0_clk0_refclk_i";
+ TIMESPEC "TS_q0_clk0_refclk_i" = PERIOD "q0_clk0_refclk_i" 8.0;
+ NET "*/q2_clk0_refclk_i" TNM_NET = "q2_clk0_refclk_i";
+ TIMESPEC "TS_q2_clk0_refclk_i" = PERIOD "q2_clk0_refclk_i" 8.0;
+
+    
+# DRP Clock Constraint
+NET "*/drpclk_in_i" TNM_NET = "drpclk_in_i";
+TIMESPEC "TS_drpclk_in_i" = PERIOD "drpclk_in_i" 10.0;
+ 
+# User Clock Constraints
+NET "*/gt0_txusrclk_i" TNM_NET = "gt0_txusrclk_i";
+TIMESPEC "TS_gt0_txusrclk_i" = PERIOD "gt0_txusrclk_i" 6.4;
+
+NET "*/gt0_rxusrclk_i" TNM_NET = "gt0_rxusrclk_i";
+TIMESPEC "TS_gt0_rxusrclk_i" = PERIOD "gt0_rxusrclk_i" 6.4;
+
+NET "*/gt1_rxusrclk_i" TNM_NET = "gt1_rxusrclk_i";
+TIMESPEC "TS_gt1_rxusrclk_i" = PERIOD "gt1_rxusrclk_i" 6.4;
+
+NET "*/gt2_rxusrclk_i" TNM_NET = "gt2_rxusrclk_i";
+TIMESPEC "TS_gt2_rxusrclk_i" = PERIOD "gt2_rxusrclk_i" 6.4;
+
+NET "*/gt3_rxusrclk_i" TNM_NET = "gt3_rxusrclk_i";
+TIMESPEC "TS_gt3_rxusrclk_i" = PERIOD "gt3_rxusrclk_i" 6.4;
+
+NET "*/gt4_txusrclk_i" TNM_NET = "gt4_txusrclk_i";
+TIMESPEC "TS_gt4_txusrclk_i" = PERIOD "gt4_txusrclk_i" 6.4;
+
+NET "*/gt4_rxusrclk_i" TNM_NET = "gt4_rxusrclk_i";
+TIMESPEC "TS_gt4_rxusrclk_i" = PERIOD "gt4_rxusrclk_i" 6.4;
+
+NET "*/gt5_rxusrclk_i" TNM_NET = "gt5_rxusrclk_i";
+TIMESPEC "TS_gt5_rxusrclk_i" = PERIOD "gt5_rxusrclk_i" 6.4;
+
+NET "*/gt6_rxusrclk_i" TNM_NET = "gt6_rxusrclk_i";
+TIMESPEC "TS_gt6_rxusrclk_i" = PERIOD "gt6_rxusrclk_i" 6.4;
+
+NET "*/gt7_rxusrclk_i" TNM_NET = "gt7_rxusrclk_i";
+TIMESPEC "TS_gt7_rxusrclk_i" = PERIOD "gt7_rxusrclk_i" 6.4;
+
+
+
+####################### GT reference clock constraints #######################
+# !!!!!!!!!!!!!!!need to be change!!!!!!!!!!!!!!!!!!!
+NET Q0_CLK0_GTREFCLK_PAD_N_IN  LOC=AD5;
+NET Q0_CLK0_GTREFCLK_PAD_P_IN  LOC=AD6;
+NET Q2_CLK0_GTREFCLK_PAD_N_IN  LOC=R7;
+NET Q2_CLK0_GTREFCLK_PAD_P_IN  LOC=R8;
+# !!!!!!!!!!!!!!!need to be change!!!!!!!!!!!!!!!!!!!
+################################# mgt wrapper constraints #####################
+# !!!!!!!!!!!!!!!need to be change!!!!!!!!!!!!!!!!!!!
+##---------- Set placement for gt0_gtx_wrapper_i/GTXE2_CHANNEL ------
+INST */serdes_coe_init_i/serdes_coe_i/gt0_serdes_coe_i/gtxe2_i LOC=GTXE2_CHANNEL_X0Y3;//invert the oder to match FPGA3
+
+##---------- Set placement for gt1_gtx_wrapper_i/GTXE2_CHANNEL ------
+INST */serdes_coe_init_i/serdes_coe_i/gt1_serdes_coe_i/gtxe2_i LOC=GTXE2_CHANNEL_X0Y2;
+
+##---------- Set placement for gt2_gtx_wrapper_i/GTXE2_CHANNEL ------
+INST */serdes_coe_init_i/serdes_coe_i/gt2_serdes_coe_i/gtxe2_i LOC=GTXE2_CHANNEL_X0Y1;
+
+##---------- Set placement for gt3_gtx_wrapper_i/GTXE2_CHANNEL ------
+INST */serdes_coe_init_i/serdes_coe_i/gt3_serdes_coe_i/gtxe2_i LOC=GTXE2_CHANNEL_X0Y0;
+
+##---------- Set placement for gt4_gtx_wrapper_i/GTXE2_CHANNEL ------
+INST */serdes_coe_init_i/serdes_coe_i/gt4_serdes_coe_i/gtxe2_i LOC=GTXE2_CHANNEL_X0Y8;
+
+##---------- Set placement for gt5_gtx_wrapper_i/GTXE2_CHANNEL ------
+INST */serdes_coe_init_i/serdes_coe_i/gt5_serdes_coe_i/gtxe2_i LOC=GTXE2_CHANNEL_X0Y9;
+
+##---------- Set placement for gt6_gtx_wrapper_i/GTXE2_CHANNEL ------
+INST */serdes_coe_init_i/serdes_coe_i/gt6_serdes_coe_i/gtxe2_i LOC=GTXE2_CHANNEL_X0Y10;
+
+##---------- Set placement for gt7_gtx_wrapper_i/GTXE2_CHANNEL ------
+INST */serdes_coe_init_i/serdes_coe_i/gt7_serdes_coe_i/gtxe2_i LOC=GTXE2_CHANNEL_X0Y11;
+
+# !!!!!!!!!!!!!!!need to be change!!!!!!!!!!!!!!!!!!!
+
+##################################System Clock Constraints ##########################
+
+NET "I_400mhz_clk_p" TNM_NET = "sys_grp";
+TIMESPEC "TS_sys_grp" = PERIOD "sys_grp" 2.5 ns HIGH 50%;
+
+NET "I_sys_rst_n" LOC = F20 |IOSTANDARD = LVCMOS33;
+NET "I_125mhz_clk"  LOC = E20 | IOSTANDARD = LVCMOS33;
+NET "I_100mhz_clk_p" LOC = G27 |IOSTANDARD = LVDS_25;
+NET "I_100mhz_clk_n" LOC = F27 |IOSTANDARD = LVDS_25;
+NET "I_400mhz_clk_p" LOC = AA27 |IOSTANDARD = LVDS_25;
+NET "I_400mhz_clk_n" LOC = AB27 |IOSTANDARD = LVDS_25;
+
+
+
+
+
+
+
