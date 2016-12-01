@@ -24,7 +24,6 @@ module serdes_tran_ctrl(//==============system input================//
     
     //===========accu_data if===============//
     I_angle_info        ,
-    I_mach_angle_info   ,
     I_mode_info         ,
     I_M420_result_ena   ,
     I_M420_i_result_dat ,
@@ -51,7 +50,6 @@ module serdes_tran_ctrl(//==============system input================//
 input           I_rst_n             ;
 input           I_sys_clk           ;
 input[4:0]      I_angle_info        ;
-input[15:0]     I_mach_angle_info   ;
 input[2:0]      I_mode_info         ;
 input           I_M420_result_ena   ;
 input[23:0]     I_M420_i_result_dat ;
@@ -119,13 +117,12 @@ reg             R_data_is_k         ;
 
 assign W_M420_signaldata = {I_M420_i_result_dat,I_M420_q_result_dat};
 
-
-
 //-------------tx i q result data to master 420T-------------//
 always @(posedge I_sys_clk or negedge I_rst_n) 
 begin
     if (~I_rst_n) 
     begin
+        R_M420_tx_cnt       <= 2'd0;
         R_M420_signaldata   <=48'd0;
         R_M420_signal_ena   <= 1'b0;
     end
@@ -133,11 +130,13 @@ begin
     begin
         if(I_M420_result_ena)
         begin
+            R_M420_tx_cnt       <= R_M420_tx_cnt+1'b1;
             R_M420_signaldata   <= W_M420_signaldata ;
             R_M420_signal_ena   <= 1'b1;
         end
         else
         begin
+            R_M420_tx_cnt       <= 2'd0;
             R_M420_signaldata   <=48'd0;
             R_M420_signal_ena   <= 1'b0;
         end
@@ -148,7 +147,6 @@ always @(posedge I_sys_clk or negedge I_rst_n)
 begin
     if (~I_rst_n) 
     begin
-        R_M420_tx_cnt       <= 2'd0;
         R1_M420_signaldata   <=48'd0;
         R1_M420_signal_ena   <= 1'b0;
     end
@@ -156,13 +154,11 @@ begin
     begin
         if(R_M420_signal_ena)
         begin
-            R_M420_tx_cnt       <= R_M420_tx_cnt+1'b1;
-            R1_M420_signaldata   <= W_M420_signaldata ;
+            R1_M420_signaldata   <= R_M420_signaldata ;
             R1_M420_signal_ena   <= 1'b1;
         end
         else
         begin
-            R_M420_tx_cnt       <= 2'd0;
             R1_M420_signaldata   <=48'd0;
             R1_M420_signal_ena   <= 1'b0;
         end
@@ -178,7 +174,7 @@ begin
     end
     else 
     begin
-        if(R1_M420_signal_ena)
+        if(R_M420_signal_ena)
         begin
             case(R_M420_tx_cnt)
             2'd1: 
@@ -212,6 +208,7 @@ begin
 end
 
 //  read me : 16384/156.25M*6.25M=655.36, need fifo 1024
+//  read me : 8192/156.25M*6.25M=327.68, need fifo 1024
 fifo_64x256 fifo_M420_signal(
     .rst            (~I_rst_n           ),
     .wr_clk         (I_sys_clk          ),//200M,write data rate is 3/4,so real clk is 150M
@@ -314,7 +311,7 @@ end
 //  read me :mode 1->8192 fft and mode 4->4096 fft,    energ<1000
 //******************************************************************************
 //------------------------------ MUX into signal_fifo ------------------------------//
-assign W_energydata = {I_mach_angle_info,I_mode_info,I_angle_info,I_target_energy,3'b0,I_target_range};//24+24+13
+assign W_energydata = {16'h0,I_mode_info,I_angle_info,I_target_energy,3'b0,I_target_range};//27+24+13
 
 //------------------------------ MUX into tx_fifo ------------------------------//
 always @(posedge I_sys_clk or negedge I_rst_n) 
@@ -442,7 +439,7 @@ begin
         case({R_mode14_en,R1_mode14_en,R2_mode14_en,R_mode2356_en,R1_mode2356_en,R2_mode2356_en,R_M420_rd_valid,R_rd_valid2})
         8'b1000_0000:
         begin
-            R_serdes_data   <=  64'h1c1c_1c1c_1c1c_1c1c;
+            R_serdes_data   <=  64'h3c1c_3c1c_3c1c_3c1c;
             R_data_is_k     <=  1'b0;
         end
         8'b0100_0000:
@@ -457,7 +454,7 @@ begin
         end
         8'b0001_0000:
         begin
-            R_serdes_data   <=  64'h1c1c_1c1c_1c1c_1c1c;
+            R_serdes_data   <=  64'h3c1c_3c1c_3c1c_3c1c;
             R_data_is_k     <=  1'b0;
         end
         8'b0000_1000:

@@ -12,12 +12,8 @@ Net I_125mhz_clk     LOC = E20  | IOSTANDARD = LVCMOS33;
 
 
 
-
-
-
-
 //******************************************************************************
-//                               Vivado rtl Attribute
+//                               rtl Attribute
 //******************************************************************************
 (* dont_touch="true" *)
 (* MARK_DEBUG="true" *)
@@ -77,3 +73,6 @@ set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 write_cfgmem -force -format MCS -interface spix4 -size 512 -loadbit "up 0x0 \
     E:/FPGA/A7_changzhou_reset_n/changzhou.runs/impl_1/top.bit" \
     E:/FPGA/A7_changzhou_reset_n/changzhou.runs/impl_1/top.mcs
+
+##save ila data
+write_hw_ila_data my_ila_data_file.ila [upload_hw_ila_data hw_ila_1] -csv_file/-vcd_file
